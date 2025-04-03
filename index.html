@@ -724,6 +724,15 @@
         .draft-team-handicap.reveal {
              opacity: 1;
         }
+        /* Add highlighting for the interactive draft pick */
+        .draft-player-slot.selecting {
+            background-color: #fffacd; /* Light yellow background */
+            border-bottom: 1px solid #e0ca74;
+        }
+        .draft-team-column.selecting {
+            border: 2px solid #3a803a; /* Green border for the whole column */
+            box-shadow: 0 0 10px rgba(58, 128, 58, 0.5);
+        }
         
         @media (max-width: 768px) {
             .container {
@@ -1787,20 +1796,27 @@
 
                 // Handle the click of the "Next Pick" button in the interactive draft
                 function handleNextDraftPick() {
+                    console.log("handleNextDraftPick called"); // Debug log
                     const pickResult = GolfApp.DataModel.makeInteractiveDraftPick();
+                    console.log("Pick Result:", pickResult); // Debug log
 
                     if (pickResult.success) {
+                        console.log("Pick successful, updating UI state..."); // Debug log
                         // Update the UI state before updating the display
                         GolfApp.UIController.getUIState().interactiveDraftState = pickResult.updatedState; 
                         
                         // Update the UI to show the picked player and highlight next
+                        console.log("Calling updateDraftPickUI..."); // Debug log
                         GolfApp.UIController.updateDraftPickUI(pickResult); 
+                        console.log("updateDraftPickUI finished."); // Debug log
                         
                         // If draft is now complete, finalize
                         if (pickResult.isDraftComplete) {
+                            console.log("Draft complete, finalizing..."); // Debug log
                             finalizeInteractiveDraft();
                         }
                     } else {
+                        console.error("Pick failed:", pickResult.message); // Debug log
                         GolfApp.UIController.showError(pickResult.message || "Failed to make draft pick.");
                         // Consider closing overlay or enabling close button on error
                         const draftOverlay = document.getElementById('interactive-draft-overlay');
@@ -1835,10 +1851,55 @@
                 }
                 
                 // Handle file upload for CSV import
-                function handleFileUpload(event) { /* ... existing logic ... */ }
+                function handleFileUpload(event) { 
+                    console.log("handleFileUpload triggered."); // Debug log
+                    const file = event.target.files[0];
+                    if (!file) {
+                        console.log("No file selected."); // Debug log
+                        return;
+                    }
+                    console.log("File selected:", file.name); // Debug log
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const contents = e.target.result;
+                        processCSV(contents); // Call processCSV after file read
+                    };
+                    reader.readAsText(file);
+                 }
                 
                 // Process CSV data
-                function processCSV(csv) { /* ... existing logic ... */ }
+                function processCSV(csv) { 
+                    console.log("Processing CSV data..."); // Debug log
+                    GolfApp.UIController.clearError();
+                    
+                    const result = GolfApp.DataModel.processCSV(csv);
+                    console.log("CSV Processing Result:", result); // Debug log
+                    
+                    if (result.errors.length > 0) {
+                        GolfApp.UIController.showError(`CSV Import Error: ${result.errors[0]}`);
+                        return;
+                    }
+                    
+                    // Add imported players to our player list
+                    const players = GolfApp.DataModel.getPlayers().concat(result.players);
+                    console.log("Total players after import:", players.length); // Debug log
+                    GolfApp.DataModel.setPlayers(players);
+                    
+                    // Update UI
+                    console.log("Calling displayPlayers after CSV import..."); // Debug log
+                    GolfApp.UIController.displayPlayers();
+                    console.log("displayPlayers finished."); // Debug log
+                    
+                    // Reset groups if players are modified
+                    if (GolfApp.UIController.getUIState().isGrouped) {
+                        console.log("Resetting groups after CSV import."); // Debug log
+                        GolfApp.UIController.resetGroups();
+                    }
+                    
+                    // Clear file input
+                    GolfApp.UIController.getDOMElements().fileInput.value = '';
+                 }
                 
                 // Reset all data
                 function resetAll() { /* ... existing logic ... */ }
@@ -1961,3 +2022,21 @@
     </script>
 </body>
 </html>
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+
+<environment_details>
+# VSCode Visible Files
+index.html
+
+# VSCode Open Tabs
+index.html
+
+# Current Time
+4/3/2025, 5:18:43 PM (America/Chicago, UTC-5:00)
+
+# Current Mode
+ACT MODE
+</environment_details>
