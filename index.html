@@ -548,6 +548,7 @@
             justify-content: center;
             align-items: center;
             color: white;
+            overflow-y: auto; /* Allow scrolling if content overflows */
         }
         
         .selection-drum {
@@ -679,6 +680,49 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 20px;
+        }
+
+        /* Styles for Draft Style Animation */
+        .draft-overlay-content {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping for many teams */
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 80vh; /* Limit height */
+            overflow-y: auto; /* Add scroll if needed */
+            background-color: rgba(255, 255, 255, 0.9); /* Lighter background for readability */
+            border-radius: 10px;
+            color: #333; /* Darker text */
+        }
+        .draft-team-column {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            min-width: 200px; /* Ensure columns have some width */
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .draft-player-slot {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px dashed #eee;
+            min-height: 1.5em; /* Placeholder height */
+            opacity: 0; /* Start hidden */
+            transition: opacity 0.5s ease-in-out;
+        }
+        .draft-player-slot.reveal {
+            opacity: 1;
+        }
+        .draft-team-handicap {
+            margin-top: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .draft-team-handicap.reveal {
+             opacity: 1;
         }
         
         @media (max-width: 768px) {
@@ -1181,6 +1225,12 @@
                                 playerB = bestTeam[1];
                                 playerC = bestTeam[2];
                                 playerD = bestTeam[3];
+                            } else {
+                                // Fallback if no suitable balanced team found after attempts
+                                playerA = groups.A[Math.floor(Math.random() * groups.A.length)];
+                                playerB = groups.B[Math.floor(Math.random() * groups.B.length)];
+                                playerC = groups.C[Math.floor(Math.random() * groups.C.length)];
+                                playerD = groups.D[Math.floor(Math.random() * groups.D.length)];
                             }
                         } else {
                             // Random selection
@@ -2372,6 +2422,93 @@
                     
                     return { success: true, team };
                 }
+
+                // New: Animation for Draft Style Selection
+                async function animateDraftStyleSelection(finalTeamsArray) {
+                    if (!finalTeamsArray || finalTeamsArray.length === 0) return;
+
+                    const numTeams = finalTeamsArray.length;
+
+                    // Create fullscreen overlay
+                    const overlay = document.createElement('div');
+                    overlay.className = 'selection-fullscreen';
+                    
+                    const title = document.createElement('h2');
+                    title.textContent = `Draft Style Pairing Results (${numTeams} Teams)`;
+                    overlay.appendChild(title);
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'draft-overlay-content';
+                    overlay.appendChild(contentDiv);
+
+                    // Create columns for each team
+                    const teamColumns = [];
+                    for (let i = 0; i < numTeams; i++) {
+                        const team = finalTeamsArray[i];
+                        const column = document.createElement('div');
+                        column.className = 'draft-team-column';
+                        column.innerHTML = `<h3>Team ${team.id}</h3>`;
+                        
+                        // Add placeholder slots for players
+                        ['D', 'C', 'B', 'A'].forEach(groupLetter => {
+                            const slot = document.createElement('div');
+                            slot.className = 'draft-player-slot';
+                            slot.id = `draft-slot-team${team.id}-group${groupLetter}`;
+                            slot.textContent = `${groupLetter}: ...`; // Initial placeholder
+                            column.appendChild(slot);
+                        });
+
+                        // Add placeholder for handicap
+                        const handicapDiv = document.createElement('div');
+                        handicapDiv.className = 'draft-team-handicap';
+                        handicapDiv.id = `draft-handicap-team${team.id}`;
+                        column.appendChild(handicapDiv);
+
+                        contentDiv.appendChild(column);
+                        teamColumns.push(column);
+                    }
+
+                    document.body.appendChild(overlay);
+
+                    // Animate reveal round by round
+                    const revealOrder = ['D', 'C', 'B', 'A'];
+                    const groupToIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 }; 
+
+                    for (const groupLetter of revealOrder) {
+                        // Pause before revealing this round
+                        await new Promise(resolve => setTimeout(resolve, 1000)); 
+
+                        for (let i = 0; i < numTeams; i++) {
+                            const team = finalTeamsArray[i];
+                            const playerIndex = groupToIndex[groupLetter];
+                            const player = team.members[playerIndex];
+                            const slotElement = document.getElementById(`draft-slot-team${team.id}-group${groupLetter}`);
+
+                            if (player && slotElement) {
+                                slotElement.textContent = `${groupLetter}: ${player.name} (${player.displayHandicap})`;
+                                slotElement.classList.add('reveal');
+                                // Optional: Add a slight delay between each team's reveal in a round
+                                await new Promise(resolve => setTimeout(resolve, 50)); 
+                            }
+                        }
+                    }
+
+                    // Reveal handicaps after all players shown
+                    await new Promise(resolve => setTimeout(resolve, 500)); 
+                    finalTeamsArray.forEach(team => {
+                         const handicapDiv = document.getElementById(`draft-handicap-team${team.id}`);
+                         const teamHandicap = GolfApp.DataModel.calculateTeamHandicap(team);
+                         const displaySign = teamHandicap < 0 ? '+' : '';
+                         handicapDiv.textContent = `Handicap: ${displaySign}${Math.abs(teamHandicap.toFixed(1))}`;
+                         handicapDiv.classList.add('reveal');
+                    });
+
+
+                    // Keep overlay open for a bit
+                    await new Promise(resolve => setTimeout(resolve, 4000)); 
+
+                    document.body.removeChild(overlay);
+                }
                 
                 // Tournament bracket visualization
                 function createTournamentBracket() {
@@ -2499,6 +2636,7 @@
                     // Initial UI state
                     DOMElements.selectTeamBtn.disabled = true;
                     DOMElements.selectAllBtn.disabled = true;
+                    DOMElements.draftStyleSelectBtn.disabled = true; // Initialize draft button disabled
                     DOMElements.showBracketBtn.disabled = true;
                     DOMElements.teeAssignmentTabButton.disabled = true;
                     
@@ -2586,6 +2724,7 @@
                     clearError: clearError,
                     resetGroups: resetGroups,
                     enhancedTeamSelection: enhancedTeamSelection,
+                    animateDraftStyleSelection: animateDraftStyleSelection, // Expose new animation function
                     createTournamentBracket: createTournamentBracket,
                     initTeeAssignment: function() {
                         createCourseLayout();
@@ -2723,7 +2862,7 @@
                 }
 
                 // Start the Draft Style team selection process
-                function startDraftStyleSelection() {
+                async function startDraftStyleSelection() { // Make async for animation
                     const UIState = GolfApp.UIController.getUIState();
                     const DOMElements = GolfApp.UIController.getDOMElements();
 
@@ -2739,7 +2878,10 @@
 
                     const result = GolfApp.DataModel.draftStyleTeamSelection();
 
-                    if (result.success) {
+                    if (result.success && result.teams.length > 0) {
+                        // Call the animation function
+                        await GolfApp.UIController.animateDraftStyleSelection(result.teams); 
+
                         GolfApp.UIController.showError(`${result.numTeamsCreated} teams created using Draft Style.`);
                         GolfApp.UIController.displayGroups(); // Update groups display (players removed)
                         GolfApp.UIController.displayTeams(); // Update teams display
@@ -2755,7 +2897,7 @@
                             DOMElements.teeAssignmentTabButton.disabled = false;
                         }
                     } else {
-                        GolfApp.UIController.showError(result.message);
+                        GolfApp.UIController.showError(result.message || "Draft Style selection failed.");
                         // Re-enable buttons on failure if grouping still valid
                         const canForm = GolfApp.DataModel.canFormTeam();
                         DOMElements.selectTeamBtn.disabled = !canForm;
