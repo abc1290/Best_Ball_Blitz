@@ -1790,7 +1790,10 @@
                     const pickResult = GolfApp.DataModel.makeInteractiveDraftPick();
 
                     if (pickResult.success) {
-                        // Update the UI to show the picked player
+                        // Update the UI state before updating the display
+                        GolfApp.UIController.getUIState().interactiveDraftState = pickResult.updatedState; 
+                        
+                        // Update the UI to show the picked player and highlight next
                         GolfApp.UIController.updateDraftPickUI(pickResult); 
                         
                         // If draft is now complete, finalize
