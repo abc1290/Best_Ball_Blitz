@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Golf Team Selector & Tee Assignment</title>
+  <title>Random Team Selection Test</title>
   <style>
-    /* (Existing CSS styles remain unchanged) */
     body {
       font-family: 'Arial', sans-serif;
       line-height: 1.6;
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       background-color: #f5f5f5;
@@ -17,30 +16,6 @@
     }
     h1, h2, h3 {
       color: #2d5d2a;
-    }
-    .container {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .input-section, .team-selection, .teams-display, .tee-assignment {
-      background-color: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .input-section { flex: 1; }
-    .groups-display { flex: 1; }
-    .team-selection { flex: 1; }
-    .teams-display, .tee-assignment { width: 100%; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
-    input[type="text"], input[type="number"], input[type="time"], select {
-      width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;
-    }
-    .input-invalid { border-color: #dc3545; }
-    .validation-feedback {
-      color: #dc3545; font-size: 0.85em; margin-top: 5px; min-height: 1em;
     }
     button {
       background-color: #3a803a;
@@ -55,325 +30,12 @@
     }
     button:hover { background-color: #2d632d; }
     button:disabled { background-color: #cccccc; cursor: not-allowed; }
-    button:focus { outline: 2px solid #4a94a8; outline-offset: 2px; }
-    .player-list {
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
-    .player-item {
-      display: flex; justify-content: space-between;
-      padding: 5px 0; border-bottom: 1px solid #eee;
-    }
-    .group-container {
-      display: flex; gap: 10px; margin-top: 20px;
-    }
-    .group {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 10px;
-    }
-    .group h3 {
-      text-align: center; margin-top: 0; padding-bottom: 5px; border-bottom: 2px solid #2d5d2a;
-    }
-    .teams-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .team-card {
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 15px;
-    }
-    .team-card h3 {
-      text-align: center;
-      margin-top: 0;
-      border-bottom: 2px solid #2d5d2a;
-      padding-bottom: 5px;
-    }
     .team-member {
       margin: 8px 0; padding: 5px;
       background-color: #ffffff;
       border-radius: 4px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
-    .team-stats {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed #ddd;
-      font-size: 0.9em;
-      color: #666;
-    }
-    .highlight {
-      background-color: #e6f7e6;
-      animation: highlight 1s ease-in-out;
-    }
-    @keyframes highlight {
-      0% { background-color: #c8e6c9; }
-      100% { background-color: #e6f7e6; }
-    }
-    .remove-btn {
-      background-color: #dc3545;
-      margin-left: 5px;
-      padding: 2px 5px;
-      font-size: 12px;
-    }
-    .remove-btn:hover { background-color: #c82333; }
-    .selection-animation {
-      height: 150px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .selection-slot {
-      width: 80px;
-      height: 80px;
-      border: 2px solid #2d5d2a;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: white;
-      font-weight: bold;
-      font-size: 18px;
-      transition: all 0.3s ease;
-    }
-    .selecting {
-      box-shadow: 0 0 20px rgba(58, 128, 58, 0.8);
-      transform: scale(1.1);
-    }
-    .file-input { margin-bottom: 15px; }
-    #errorMessages { color: #dc3545; margin-bottom: 10px; }
-    .stats { margin-top: 10px; font-style: italic; color: #666; }
-    .tab-buttons {
-      display: flex;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .tab-button {
-      padding: 10px 20px;
-      background-color: #ddd;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px 4px 0 0;
-      margin-right: 5px;
-    }
-    .tab-button.active {
-      background-color: #3a803a;
-      color: white;
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .hole-box {
-      display: inline-block;
-      width: 60px;
-      height: 80px;
-      border: 2px solid #2d5d2a;
-      border-radius: 8px;
-      margin: 5px;
-      text-align: center;
-      vertical-align: top;
-      overflow: hidden;
-      background-color: white;
-      position: relative;
-    }
-    .hole-number {
-      background-color: #2d5d2a;
-      color: white;
-      font-weight: bold;
-      padding: 5px 0;
-    }
-    .double-stacked { background-color: #c8e6c9; }
-    .hole-team {
-      font-size: 12px;
-      padding: 3px;
-      cursor: pointer;
-    }
-    .hole-team:hover { background-color: #f0f0f0; }
-    .course-layout { margin-top: 20px; text-align: center; }
-    .assign-button { display: block; margin: 20px auto; padding: 10px 20px; }
-    .unassigned-teams {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background-color: #f9f9f9;
-    }
-    .unassigned-team {
-      display: inline-block;
-      padding: 5px 10px;
-      margin: 5px;
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .unassigned-team:hover { background-color: #e6f7e6; }
-    .unassigned-team.selected { background-color: #c8e6c9; border-color: #3a803a; }
-    .tee-sheet-container { margin-top: 20px; overflow-x: auto; }
-    .tee-sheet-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .tee-sheet-table th, .tee-sheet-table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    .tee-sheet-table th { background-color: #2d5d2a; color: white; }
-    .tee-sheet-table tr:nth-child(even) { background-color: #f2f2f2; }
-    .print-button { margin-top: 20px; background-color: #2d5d2a; }
-    #teeAssignmentTab { padding-bottom: 50px; }
-    .help-tooltip {
-      display: inline-block;
-      position: relative;
-      margin-left: 5px;
-      width: 18px;
-      height: 18px;
-      background-color: #3a803a;
-      color: white;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 18px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: help;
-    }
-    .help-tooltip .help-text {
-      visibility: hidden;
-      width: 200px;
-      background-color: #555;
-      color: #fff;
-      text-align: left;
-      border-radius: 6px;
-      padding: 10px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      margin-left: -100px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      font-weight: normal;
-      line-height: 1.4;
-      font-size: 14px;
-    }
-    .help-tooltip:hover .help-text {
-      visibility: visible;
-      opacity: 1;
-    }
-    .switch-container {
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-    }
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-      margin-right: 10px;
-    }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-    input:checked + .slider {
-      background-color: #3a803a;
-    }
-    input:focus + .slider {
-      box-shadow: 0 0 1px #3a803a;
-    }
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-    .tee-time-settings {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background-color: #f9f9f9;
-    }
-    .tee-time-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 10px;
-    }
-    .tee-time-field {
-      flex: 1;
-      min-width: 200px;
-    }
-    .tutorial-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0,0,0,0.7);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .tutorial-content {
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      max-width: 600px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    .tutorial-step {
-      margin-bottom: 20px;
-    }
-    .tutorial-nav {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-    .tutorial-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: transparent;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: white;
-    }
-    /* New styles for Sequential Team Assignment overlay */
     .selection-fullscreen {
       position: fixed;
       top: 0;
@@ -391,1136 +53,207 @@
   </style>
 </head>
 <body>
-  <h1>Golf Team Selector & Tee Assignment</h1>
+  <h1>Random Team Selection Test</h1>
   
-  <div class="tab-buttons" role="tablist">
-    <button class="tab-button active" data-tab="teamSelectionTab" role="tab" aria-selected="true" aria-controls="teamSelectionTab">Team Selection</button>
-    <button class="tab-button" data-tab="teeAssignmentTab" id="teeAssignmentTabButton" role="tab" aria-selected="false" aria-controls="teeAssignmentTab">Tee Assignment</button>
-    <button id="helpButton" aria-label="Show tutorial">Help</button>
-    <button id="saveButton" aria-label="Save data">Save</button>
-    <button id="loadButton" aria-label="Load data">Load</button>
-  </div>
+  <button id="randomTeamSelectBtn">Random Team Selection</button>
   
-  <div class="tab-content active" id="teamSelectionTab" role="tabpanel" aria-labelledby="teamSelectionTab">
-    <div class="container">
-      <div class="input-section">
-        <h2>Add Players</h2>
-        <div id="errorMessages" role="alert" aria-live="assertive"></div>
-        
-        <div class="form-group">
-          <label for="fileInput">Import Players from CSV (optional):</label>
-          <input type="file" id="fileInput" accept=".csv" class="file-input" aria-describedby="csvFormat">
-          <small id="csvFormat">CSV format: LastName,FirstName,Handicap (e.g., "Smith,John,10.5" or "Smith,John,+2.1")</small>
-        </div>
-        
-        <div class="form-group">
-          <label for="playerName">Player Name:</label>
-          <input type="text" id="playerName" placeholder="Last Name, First Name" aria-describedby="nameValidation">
-          <div id="nameValidation" class="validation-feedback" aria-live="polite"></div>
-        </div>
-        
-        <div class="form-group">
-          <label for="playerHandicap">Handicap:</label>
-          <input type="text" id="playerHandicap" placeholder="Enter handicap (e.g., 10.5 or +2.1)" aria-describedby="handicapValidation">
-          <div id="handicapValidation" class="validation-feedback" aria-live="polite"></div>
-        </div>
-        
-        <button id="addPlayerBtn" aria-label="Add player to list">Add Player</button>
-        <button id="resetBtn" aria-label="Reset all data">Reset All</button>
-        
-        <div class="player-list" id="playerList" aria-label="Player list" tabindex="0">
-          <!-- Player items will be added here -->
-        </div>
-        
-        <p class="stats" id="playerCount" aria-live="polite">Total players: 0</p>
-      </div>
-      
-      <div class="groups-display">
-        <h2>Players by Group</h2>
-        <div class="switch-container">
-          <label class="switch">
-            <input type="checkbox" id="balanceTeamsToggle" aria-label="Balance teams by handicap">
-            <span class="slider"></span>
-          </label>
-          <span>Balance teams by handicap</span>
-          <div class="help-tooltip" aria-label="Help about team balancing" tabindex="0">
-            ?
-            <span class="help-text">When enabled, the system will attempt to create teams with similar total handicaps, ensuring more balanced competition.</span>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="maxHandicapDiff">Maximum Handicap Difference:</label>
-          <input type="number" id="maxHandicapDiff" value="5" min="0" max="20" step="0.5" aria-describedby="handicapDiffHelp">
-          <small id="handicapDiffHelp">Maximum allowed difference between team handicaps (set to 0 to disable).</small>
-        </div>
-        
-        <button id="groupPlayersBtn" aria-label="Group players by handicap">Group Players</button>
-        
-        <div class="group-container">
-          <div class="group">
-            <h3>Group A</h3>
-            <div id="groupA" class="player-list" tabindex="0" aria-label="Group A players"></div>
-          </div>
-          
-          <div class="group">
-            <h3>Group B</h3>
-            <div id="groupB" class="player-list" tabindex="0" aria-label="Group B players"></div>
-          </div>
-        </div>
-        
-        <div class="group-container">
-          <div class="group">
-            <h3>Group C</h3>
-            <div id="groupC" class="player-list" tabindex="0" aria-label="Group C players"></div>
-          </div>
-          
-          <div class="group">
-            <h3>Group D</h3>
-            <div id="groupD" class="player-list" tabindex="0" aria-label="Group D players"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="team-selection">
-      <h2>Team Selection</h2>
-      <p>Select teams with one player from each group.</p>
-      
-      <div class="selection-animation">
-        <div class="selection-slot" id="slotA" tabindex="0" aria-label="Selection slot for Group A">A</div>
-        <div class="selection-slot" id="slotB" tabindex="0" aria-label="Selection slot for Group B">B</div>
-        <div class="selection-slot" id="slotC" tabindex="0" aria-label="Selection slot for Group C">C</div>
-        <div class="selection-slot" id="slotD" tabindex="0" aria-label="Selection slot for Group D">D</div>
-      </div>
-      
-      <button id="selectTeamBtn" disabled aria-label="Select next team">Select Next Team</button>
-      <button id="selectAllBtn" disabled aria-label="Auto-select all teams">Auto-Select All Teams</button>
-      <!-- New button for sequential team assignment -->
-      <button id="sequentialSelectTeamBtn" disabled aria-label="Sequential Team Assignment">Sequential Team Assignment</button>
-      
-      <p class="stats" id="teamCount" aria-live="polite">Teams created: 0</p>
-      
-      <div class="party-buttons">
-        <button id="showBracketBtn" class="show-bracket-btn" disabled>Show Tournament Bracket</button>
-      </div>
-    </div>
-    
-    <div class="teams-display">
-      <h2>Teams</h2>
-      <div class="teams-grid" id="teamsContainer" aria-label="Teams list" tabindex="0">
-        <!-- Team cards will be added here -->
-      </div>
-    </div>
-  </div>
-  
-  <div class="tab-content" id="teeAssignmentTab" role="tabpanel" aria-labelledby="teeAssignmentTab">
-    <h2>Tee Assignment</h2>
-    <p>Assign teams to starting holes. Double-stacked holes are highlighted in green.</p>
-    
-    <div class="tee-time-settings">
-      <h3>Tee Time Settings</h3>
-      <div class="tee-time-row">
-        <div class="tee-time-field">
-          <label for="startFormat">Start Format:</label>
-          <select id="startFormat" aria-describedby="startFormatHelp">
-            <option value="sequential">Sequential Start</option>
-            <option value="shotgun">Shotgun Start</option>
-          </select>
-          <div id="startFormatHelp" class="help-tooltip" aria-label="Help about start format" tabindex="0">
-            ?
-            <span class="help-text">Sequential Start: Teams start at intervals from the first hole. Shotgun Start: All teams start simultaneously at different holes.</span>
-          </div>
-        </div>
-        
-        <div class="tee-time-field">
-          <label for="startTime">Start Time:</label>
-          <input type="time" id="startTime" value="08:00" aria-label="First tee time">
-        </div>
-        
-        <div class="tee-time-field">
-          <label for="timeInterval">Time Interval (minutes):</label>
-          <input type="number" id="timeInterval" value="10" min="5" max="20" step="5" aria-label="Minutes between tee times">
-        </div>
-      </div>
-    </div>
-    
-    <div class="course-layout">
-      <h3>Course Layout</h3>
-      <div id="courseLayout" aria-label="Course layout with 18 holes" tabindex="0">
-        <!-- Hole boxes will be added here -->
-      </div>
-    </div>
-    
-    <div class="unassigned-teams" id="unassignedTeams">
-      <h3>Unassigned Teams</h3>
-      <div id="unassignedTeamsList" aria-label="Unassigned teams" tabindex="0">
-        <!-- Unassigned teams will be listed here -->
-      </div>
-    </div>
-    
-    <div class="assign-buttons">
-      <button id="autoAssignBtn" class="assign-button" aria-label="Auto-assign teams to holes">Auto-Assign Teams to Holes</button>
-      <button id="randomAssignBtn" class="assign-button" aria-label="Randomly assign teams to holes">Randomize Tee Assignments</button>
-      <button id="resetAssignmentBtn" class="assign-button" aria-label="Reset hole assignments">Reset Assignments</button>
-    </div>
-    
-    <div class="tee-sheet-container" id="teeSheetContainer">
-      <h3>Tee Sheet</h3>
-      <table class="tee-sheet-table" id="teeSheetTable" aria-label="Tee sheet with team assignments">
-        <thead>
-          <tr>
-            <th>Hole</th>
-            <th>Tee Time</th>
-            <th>Team</th>
-            <th>Player A</th>
-            <th>Player B</th>
-            <th>Player C</th>
-            <th>Player D</th>
-          </tr>
-        </thead>
-        <tbody id="teeSheetBody">
-          <!-- Tee sheet rows will be added here -->
-        </tbody>
-      </table>
-      
-      <button id="printTeeSheetBtn" class="print-button" aria-label="Print tee sheet">Print Tee Sheet</button>
-    </div>
-  </div>
-  
-  <!-- Tutorial Modal -->
-  <div id="tutorialOverlay" class="tutorial-overlay" style="display: none;">
-    <div class="tutorial-content" role="dialog" aria-labelledby="tutorialTitle" aria-describedby="tutorialDescription">
-      <h2 id="tutorialTitle">Golf Team Selector Tutorial</h2>
-      <p id="tutorialDescription">Follow these steps to create balanced teams and assign tee times.</p>
-      
-      <div class="tutorial-steps">
-        <!-- Step content will be dynamically inserted here -->
-      </div>
-      
-      <div class="tutorial-nav">
-        <button id="tutorialPrevBtn" disabled>Previous</button>
-        <span id="tutorialProgress">Step 1 of 5</span>
-        <button id="tutorialNextBtn">Next</button>
-      </div>
-      
-      <button class="tutorial-close" aria-label="Close tutorial">&times;</button>
-    </div>
-  </div>
+  <div id="teamsContainer"></div>
   
   <script>
-    /**
-     * Golf Team Selector & Tee Assignment Application
-     * 
-     * A modular application for organizing golf teams and creating tee time assignments
-     */
+    // Sample data for testing
+    const sampleGroups = {
+      A: [
+        { name: "Woods, Tiger", handicap: 0, isPlus: true, displayHandicap: "+0" },
+        { name: "Johnson, Dustin", handicap: 1.2, isPlus: false, displayHandicap: "1.2" },
+        { name: "McIlroy, Rory", handicap: 0.5, isPlus: false, displayHandicap: "0.5" }
+      ],
+      B: [
+        { name: "Mickelson, Phil", handicap: 3.5, isPlus: false, displayHandicap: "3.5" },
+        { name: "Spieth, Jordan", handicap: 2.8, isPlus: false, displayHandicap: "2.8" },
+        { name: "Thomas, Justin", handicap: 2.1, isPlus: false, displayHandicap: "2.1" }
+      ],
+      C: [
+        { name: "Rahm, Jon", handicap: 5.6, isPlus: false, displayHandicap: "5.6" },
+        { name: "DeChambeau, Bryson", handicap: 4.9, isPlus: false, displayHandicap: "4.9" },
+        { name: "Koepka, Brooks", handicap: 4.2, isPlus: false, displayHandicap: "4.2" }
+      ],
+      D: [
+        { name: "Matsuyama, Hideki", handicap: 8.7, isPlus: false, displayHandicap: "8.7" },
+        { name: "Finau, Tony", handicap: 7.3, isPlus: false, displayHandicap: "7.3" },
+        { name: "Casey, Paul", handicap: 6.8, isPlus: false, displayHandicap: "6.8" }
+      ]
+    };
     
-    (function() {
-      'use strict';
+    const teams = [];
+    
+    // Random Team Selection function
+    function randomTeamSelection() {
+      const groups = sampleGroups;
       
-      const GolfApp = {};
+      // Check if there are enough players in each group
+      if (groups.A.length === 0 || groups.B.length === 0 || 
+          groups.C.length === 0 || groups.D.length === 0) {
+        alert("Not enough players left to form a full team.");
+        return;
+      }
       
-      /**
-       * Data Model Module
-       * Handles data structures and validation
-       */
-      GolfApp.DataModel = (function() {
-        const _data = {
-          players: [],
-          groups: { A: [], B: [], C: [], D: [] },
-          teams: [],
-          holeAssignments: {},
-          settings: {
-            balanceTeams: false,
-            maxHandicapDiff: 5,
-            startFormat: 'sequential',
-            startTime: '08:00',
-            timeInterval: 10
-          }
-        };
-        
-        const doubleStackedHoles = [3, 4, 6, 7, 8, 10, 12, 13, 16, 18];
-        
-        function validatePlayerName(name) {
-          if (!name || name.trim() === '') {
-            return { valid: false, message: 'Name is required' };
-          }
-          if (!name.includes(',')) {
-            return { valid: false, message: 'Use format: Last Name, First Name' };
-          }
-          return { valid: true };
-        }
-        
-        function validateHandicap(handicap) {
-          if (!handicap || handicap.trim() === '') {
-            return { valid: false, message: 'Handicap is required' };
-          }
-          const isPlus = handicap.includes('+');
-          const handicapValue = parseFloat(isPlus ? handicap.replace('+', '') : handicap);
-          if (isNaN(handicapValue)) {
-            return { valid: false, message: 'Handicap must be a number' };
-          }
-          if (handicapValue < 0 && !isPlus) {
-            return { valid: false, message: 'Use +value format for plus handicaps' };
-          }
-          if (handicapValue > 54) {
-            return { valid: false, message: 'Handicap cannot exceed 54.0' };
-          }
-          return { valid: true, value: handicapValue, isPlus: isPlus };
-        }
-        
-        function calculateTeamHandicap(team) {
-          let total = 0;
-          team.members.forEach(player => {
-            const value = player.isPlus ? -player.handicap : player.handicap;
-            total += value;
-          });
-          return total;
-        }
-        
-        return {
-          getDoubleStackedHoles: () => doubleStackedHoles,
-          getPlayers: () => _data.players,
-          getGroups: () => _data.groups,
-          getTeams: () => _data.teams,
-          getHoleAssignments: () => _data.holeAssignments,
-          getSettings: () => _data.settings,
-          setPlayers: (players) => { _data.players = players; },
-          setGroups: (groups) => { _data.groups = groups; },
-          setTeams: (teams) => { _data.teams = teams; },
-          setHoleAssignments: (assignments) => { _data.holeAssignments = assignments; },
-          updateSetting: (key, value) => { _data.settings[key] = value; },
-          resetAll: () => {
-            _data.players = [];
-            _data.groups = { A: [], B: [], C: [], D: [] };
-            _data.teams = [];
-            _data.holeAssignments = {};
-          },
-          addPlayer: (nameInput, handicapInput) => {
-            const nameValidation = validatePlayerName(nameInput);
-            const handicapValidation = validateHandicap(handicapInput);
-            if (!nameValidation.valid || !handicapValidation.valid) {
-              return {
-                valid: false,
-                errors: {
-                  name: nameValidation.valid ? null : nameValidation.message,
-                  handicap: handicapValidation.valid ? null : handicapValidation.message
-                }
-              };
-            }
-            const player = {
-              name: nameInput.trim(),
-              handicap: handicapValidation.value,
-              isPlus: handicapValidation.isPlus,
-              displayHandicap: handicapValidation.isPlus ? `+${handicapValidation.value}` : handicapValidation.value.toString()
-            };
-            _data.players.push(player);
-            return { valid: true, player };
-          },
-          removePlayer: (index) => {
-            if (index >= 0 && index < _data.players.length) {
-              _data.players.splice(index, 1);
-              return true;
-            }
-            return false;
-          },
-          groupPlayers: () => {
-            if (_data.players.length < 4) {
-              return { success: false, message: "Please add at least 4 players to form groups." };
-            }
-            _data.groups = { A: [], B: [], C: [], D: [] };
-            const sortedPlayers = [..._data.players].sort((a, b) => {
-              if (a.isPlus && !b.isPlus) return -1;
-              if (!a.isPlus && b.isPlus) return 1;
-              if (a.isPlus && b.isPlus) {
-                return b.handicap - a.handicap;
-              } else {
-                return a.handicap - b.handicap;
-              }
-            });
-            const quarterSize = Math.ceil(sortedPlayers.length / 4);
-            _data.groups.A = sortedPlayers.slice(0, quarterSize);
-            _data.groups.B = sortedPlayers.slice(quarterSize, quarterSize * 2);
-            _data.groups.C = sortedPlayers.slice(quarterSize * 2, quarterSize * 3);
-            _data.groups.D = sortedPlayers.slice(quarterSize * 3);
-            return { success: true };
-          },
-          selectTeam: () => {
-            const groups = _data.groups;
-            if (groups.A.length === 0 || groups.B.length === 0 || groups.C.length === 0 || groups.D.length === 0) {
-              return { success: false, message: "Not enough players left to form a full team." };
-            }
-            let playerA, playerB, playerC, playerD;
-            if (_data.settings.balanceTeams && _data.teams.length > 0) {
-              let totalHandicap = 0;
-              _data.teams.forEach(team => { totalHandicap += calculateTeamHandicap(team); });
-              const avgHandicap = totalHandicap / _data.teams.length;
-              let bestTeam = null;
-              let bestDifference = Infinity;
-              const maxAttempts = 50;
-              const maxDiff = parseFloat(_data.settings.maxHandicapDiff) || 0;
-              for (let i = 0; i < maxAttempts; i++) {
-                const testPlayerA = groups.A[Math.floor(Math.random() * groups.A.length)];
-                const testPlayerB = groups.B[Math.floor(Math.random() * groups.B.length)];
-                const testPlayerC = groups.C[Math.floor(Math.random() * groups.C.length)];
-                const testPlayerD = groups.D[Math.floor(Math.random() * groups.D.length)];
-                const testTeam = { members: [testPlayerA, testPlayerB, testPlayerC, testPlayerD] };
-                const teamHandicap = calculateTeamHandicap(testTeam);
-                const difference = Math.abs(teamHandicap - avgHandicap);
-                if ((maxDiff > 0 && difference <= maxDiff) || difference < bestDifference) {
-                  bestDifference = difference;
-                  bestTeam = [testPlayerA, testPlayerB, testPlayerC, testPlayerD];
-                  if (maxDiff > 0 && difference <= maxDiff) { break; }
-                }
-              }
-              if (bestTeam) {
-                playerA = bestTeam[0];
-                playerB = bestTeam[1];
-                playerC = bestTeam[2];
-                playerD = bestTeam[3];
-              }
-            } else {
-              playerA = groups.A[Math.floor(Math.random() * groups.A.length)];
-              playerB = groups.B[Math.floor(Math.random() * groups.B.length)];
-              playerC = groups.C[Math.floor(Math.random() * groups.C.length)];
-              playerD = groups.D[Math.floor(Math.random() * groups.D.length)];
-            }
-            groups.A.splice(groups.A.indexOf(playerA), 1);
-            groups.B.splice(groups.B.indexOf(playerB), 1);
-            groups.C.splice(groups.C.indexOf(playerC), 1);
-            groups.D.splice(groups.D.indexOf(playerD), 1);
-            const team = {
-              id: _data.teams.length + 1,
-              members: [playerA, playerB, playerC, playerD]
-            };
-            team.totalHandicap = calculateTeamHandicap(team);
-            _data.teams.push(team);
-            return { success: true, team };
-          },
-          canFormTeam: () => {
-            const groups = _data.groups;
-            return groups.A.length > 0 && groups.B.length > 0 && groups.C.length > 0 && groups.D.length > 0;
-          },
-          findTeamById: (teamId) => _data.teams.find(team => team.id === teamId),
-          assignTeamToHole: (teamId, hole) => {
-            if (!_data.holeAssignments[hole]) { _data.holeAssignments[hole] = []; }
-            const isDoubleStacked = doubleStackedHoles.includes(Number(hole));
-            const maxTeams = isDoubleStacked ? 2 : 1;
-            if (_data.holeAssignments[hole].length >= maxTeams) {
-              return { success: false, message: `Hole ${hole} already has the maximum number of teams.` };
-            }
-            for (const h in _data.holeAssignments) {
-              const index = _data.holeAssignments[h].indexOf(teamId);
-              if (index !== -1) { _data.holeAssignments[h].splice(index, 1); }
-            }
-            _data.holeAssignments[hole].push(teamId);
-            return { success: true };
-          },
-          removeTeamFromHole: (teamId, hole) => {
-            if (!_data.holeAssignments[hole]) { return { success: false, message: "Hole does not exist." }; }
-            const index = _data.holeAssignments[hole].indexOf(teamId);
-            if (index !== -1) {
-              _data.holeAssignments[hole].splice(index, 1);
-              return { success: true };
-            }
-            return { success: false, message: "Team not assigned to this hole." };
-          },
-          getAssignedTeamIds: () => {
-            const assignedTeams = [];
-            for (const hole in _data.holeAssignments) { assignedTeams.push(..._data.holeAssignments[hole]); }
-            return assignedTeams;
-          },
-          autoAssignTeams: () => {
-            for (let i = 1; i <= 18; i++) { _data.holeAssignments[i] = []; }
-            const teamsToAssign = [..._data.teams.map(team => team.id)];
-            for (const hole of doubleStackedHoles) {
-              for (let i = 0; i < 2; i++) {
-                if (teamsToAssign.length > 0) {
-                  const teamId = teamsToAssign.shift();
-                  _data.holeAssignments[hole].push(teamId);
-                }
-              }
-            }
-            for (let hole = 1; hole <= 18; hole++) {
-              if (!doubleStackedHoles.includes(hole)) {
-                if (teamsToAssign.length > 0) {
-                  const teamId = teamsToAssign.shift();
-                  _data.holeAssignments[hole].push(teamId);
-                }
-              }
-            }
-            return { success: true };
-          },
-          randomizeTeamAssignments: () => {
-            for (let i = 1; i <= 18; i++) { _data.holeAssignments[i] = []; }
-            const teamsToAssign = [..._data.teams.map(team => team.id)];
-            for (let i = teamsToAssign.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              [teamsToAssign[i], teamsToAssign[j]] = [teamsToAssign[j], teamsToAssign[i]];
-            }
-            const availableHoles = [];
-            doubleStackedHoles.forEach(hole => { availableHoles.push({ hole, capacity: 2 }); });
-            for (let hole = 1; hole <= 18; hole++) {
-              if (!doubleStackedHoles.includes(hole)) { availableHoles.push({ hole, capacity: 1 }); }
-            }
-            for (let i = availableHoles.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              [availableHoles[i], availableHoles[j]] = [availableHoles[j], availableHoles[i]];
-            }
-            let holeIndex = 0;
-            while (teamsToAssign.length > 0 && holeIndex < availableHoles.length) {
-              const hole = availableHoles[holeIndex].hole;
-              if (!_data.holeAssignments[hole]) { _data.holeAssignments[hole] = []; }
-              if (_data.holeAssignments[hole].length < availableHoles[holeIndex].capacity) {
-                const teamId = teamsToAssign.shift();
-                _data.holeAssignments[hole].push(teamId);
-              } else { holeIndex++; }
-            }
-            return { success: true };
-          },
-          processCSV: (csv) => {
-            const lines = csv.split(/\r\n|\n/);
-            const importedPlayers = [];
-            const errors = [];
-            for (let i = 0; i < lines.length; i++) {
-              if (!lines[i].trim()) continue;
-              const parts = lines[i].split(',');
-              if (parts.length < 3) {
-                errors.push(`Line ${i+1} doesn't have enough data. Format should be LastName,FirstName,Handicap`);
-                continue;
-              }
-              const lastName = parts[0].trim();
-              const firstName = parts[1].trim();
-              const handicapInput = parts[2].trim();
-              const handicapValidation = validateHandicap(handicapInput);
-              if (!handicapValidation.valid) {
-                errors.push(`Invalid handicap format in line ${i+1}: ${handicapValidation.message}`);
-                continue;
-              }
-              const player = {
-                name: `${lastName}, ${firstName}`,
-                handicap: handicapValidation.value,
-                isPlus: handicapValidation.isPlus,
-                displayHandicap: handicapValidation.isPlus ? `+${handicapValidation.value}` : handicapValidation.value.toString()
-              };
-              importedPlayers.push(player);
-            }
-            return { players: importedPlayers, errors };
-          },
-          saveToLocalStorage: () => {
-            try {
-              const dataToSave = {
-                players: _data.players,
-                groups: _data.groups,
-                teams: _data.teams,
-                holeAssignments: _data.holeAssignments,
-                settings: _data.settings
-              };
-              localStorage.setItem('golfApp', JSON.stringify(dataToSave));
-              return { success: true };
-            } catch (error) {
-              return { success: false, message: `Failed to save data: ${error.message}` };
-            }
-          },
-          loadFromLocalStorage: () => {
-            try {
-              const savedData = localStorage.getItem('golfApp');
-              if (!savedData) { return { success: false, message: 'No saved data found' }; }
-              const parsedData = JSON.parse(savedData);
-              _data.players = parsedData.players || [];
-              _data.groups = parsedData.groups || { A: [], B: [], C: [], D: [] };
-              _data.teams = parsedData.teams || [];
-              _data.holeAssignments = parsedData.holeAssignments || {};
-              if (parsedData.settings) { _data.settings = parsedData.settings; }
-              return { success: true };
-            } catch (error) {
-              return { success: false, message: `Failed to load data: ${error.message}` };
-            }
-          },
-          calculateTeamHandicap: calculateTeamHandicap
-        };
-      })();
+      // Create a simple overlay to display the results
+      const overlay = document.createElement('div');
+      overlay.className = 'selection-fullscreen';
+      overlay.id = 'random-selection-overlay';
       
-      /**
-       * UI Controller Module
-       * Manages the user interface and DOM interactions
-       */
-      GolfApp.UIController = (function() {
-        const DOMElements = {
-          tabButtons: document.querySelectorAll('.tab-button'),
-          tabContents: document.querySelectorAll('.tab-content'),
-          teeAssignmentTabButton: document.getElementById('teeAssignmentTabButton'),
-          playerNameInput: document.getElementById('playerName'),
-          playerHandicapInput: document.getElementById('playerHandicap'),
-          addPlayerBtn: document.getElementById('addPlayerBtn'),
-          resetBtn: document.getElementById('resetBtn'),
-          playerList: document.getElementById('playerList'),
-          playerCountElement: document.getElementById('playerCount'),
-          nameValidation: document.getElementById('nameValidation'),
-          handicapValidation: document.getElementById('handicapValidation'),
-          balanceTeamsToggle: document.getElementById('balanceTeamsToggle'),
-          maxHandicapDiff: document.getElementById('maxHandicapDiff'),
-          groupPlayersBtn: document.getElementById('groupPlayersBtn'),
-          groupA: document.getElementById('groupA'),
-          groupB: document.getElementById('groupB'),
-          groupC: document.getElementById('groupC'),
-          groupD: document.getElementById('groupD'),
-          selectTeamBtn: document.getElementById('selectTeamBtn'),
-          selectAllBtn: document.getElementById('selectAllBtn'),
-          sequentialSelectTeamBtn: document.getElementById('sequentialSelectTeamBtn'),
-          showBracketBtn: document.getElementById('showBracketBtn'),
-          teamsContainer: document.getElementById('teamsContainer'),
-          teamCountElement: document.getElementById('teamCount'),
-          selectionSlots: {
-            A: document.getElementById('slotA'),
-            B: document.getElementById('slotB'),
-            C: document.getElementById('slotC'),
-            D: document.getElementById('slotD')
-          },
-          startFormatSelect: document.getElementById('startFormat'),
-          startTimeInput: document.getElementById('startTime'),
-          timeIntervalInput: document.getElementById('timeInterval'),
-          courseLayout: document.getElementById('courseLayout'),
-          unassignedTeamsList: document.getElementById('unassignedTeamsList'),
-          autoAssignBtn: document.getElementById('autoAssignBtn'),
-          randomAssignBtn: document.getElementById('randomAssignBtn'),
-          resetAssignmentBtn: document.getElementById('resetAssignmentBtn'),
-          teeSheetBody: document.getElementById('teeSheetBody'),
-          printTeeSheetBtn: document.getElementById('printTeeSheetBtn'),
-          errorMessages: document.getElementById('errorMessages'),
-          fileInput: document.getElementById('fileInput'),
-          helpButton: document.getElementById('helpButton'),
-          saveButton: document.getElementById('saveButton'),
-          loadButton: document.getElementById('loadButton'),
-          tutorialOverlay: document.getElementById('tutorialOverlay'),
-          tutorialSteps: document.querySelector('.tutorial-steps'),
-          tutorialPrevBtn: document.getElementById('tutorialPrevBtn'),
-          tutorialNextBtn: document.getElementById('tutorialNextBtn'),
-          tutorialProgress: document.getElementById('tutorialProgress'),
-          tutorialCloseBtn: document.querySelector('.tutorial-close')
-        };
-        
-        const UIState = {
-          isGrouped: false,
-          selectedTeamId: null,
-          currentTutorialStep: 0
-        };
-        
-        // New function: Sequential Team Assignment (Order: D, C, B, A)
-        async function sequentialTeamAssignment() {
-          // Create overlay for sequential selection
-          const overlay = document.createElement('div');
-          overlay.className = 'selection-fullscreen';
-          overlay.id = 'sequential-assignment-overlay';
-          
-          const header = document.createElement('h2');
-          header.textContent = 'Sequential Team Assignment';
-          overlay.appendChild(header);
-          
-          // Create a table to display current team selections
-          const table = document.createElement('table');
-          table.id = 'sequential-team-table';
-          table.style.width = '80%';
-          table.style.margin = '20px auto';
-          table.innerHTML = `<tr>
-                              <th>Group</th>
-                              <th>Selected Player</th>
-                              <th>Action</th>
-                            </tr>`;
-          overlay.appendChild(table);
-          
-          // Container to list available players for the current group
-          const listContainer = document.createElement('div');
-          listContainer.id = 'sequential-player-list';
-          listContainer.style.margin = '20px auto';
-          listContainer.style.width = '80%';
-          overlay.appendChild(listContainer);
-          
-          // Controls for flash effect configuration
-          const controlsDiv = document.createElement('div');
-          controlsDiv.style.textAlign = 'center';
-          controlsDiv.style.marginTop = '20px';
-          const flashDurationLabel = document.createElement('label');
-          flashDurationLabel.textContent = 'Flash Duration (ms): ';
-          const flashDurationInput = document.createElement('input');
-          flashDurationInput.type = 'number';
-          flashDurationInput.id = 'flashDurationInput';
-          flashDurationInput.value = '1500'; // default duration
-          flashDurationInput.min = '500';
-          flashDurationInput.step = '500';
-          flashDurationLabel.appendChild(flashDurationInput);
-          
-          const closeFlashBtn = document.createElement('button');
-          closeFlashBtn.id = 'closeFlashBtn';
-          closeFlashBtn.textContent = 'Close Flash';
-          closeFlashBtn.style.display = 'none';
-          
-          controlsDiv.appendChild(flashDurationLabel);
-          controlsDiv.appendChild(closeFlashBtn);
-          overlay.appendChild(controlsDiv);
-          
-          document.body.appendChild(overlay);
-          
-          // Define selection order and state
-          const selectionOrder = ['D', 'C', 'B', 'A'];
-          let currentIndex = 0;
-          const currentTeam = {};
-          
-          function updateTable() {
-            // Clear table except header row
-            while (table.rows.length > 1) { table.deleteRow(1); }
-            selectionOrder.forEach(group => {
-              const row = table.insertRow();
-              const cellGroup = row.insertCell();
-              cellGroup.textContent = group;
-              const cellPlayer = row.insertCell();
-              cellPlayer.textContent = currentTeam[group] ? currentTeam[group].name + ' (' + currentTeam[group].displayHandicap + ')' : '';
-              const cellAction = row.insertCell();
-              if (!currentTeam[group] && selectionOrder[currentIndex] === group) {
-                cellAction.textContent = 'Selecting...';
-              }
-            });
-          }
-          
-          function showPlayersForGroup(group) {
-            listContainer.innerHTML = '';
-            const players = GolfApp.DataModel.getGroups()[group];
-            if (!players || players.length === 0) {
-              listContainer.textContent = `No players available in Group ${group}.`;
-              return;
-            }
-            players.forEach((player, index) => {
-              const btn = document.createElement('button');
-              btn.textContent = player.name + ' (' + player.displayHandicap + ')';
-              btn.addEventListener('click', () => selectPlayer(group, index));
-              listContainer.appendChild(btn);
-            });
-          }
-          
-          let flashTimeout = null;
-          
-          function selectPlayer(group, playerIndex) {
-            const players = GolfApp.DataModel.getGroups()[group];
-            if (!players || players.length <= playerIndex) return;
-            const selectedPlayer = players[playerIndex];
-            // Remove the selected player from the group list
-            GolfApp.DataModel.getGroups()[group].splice(playerIndex, 1);
-            currentTeam[group] = selectedPlayer;
-            updateTable();
-            const flashDuration = parseInt(flashDurationInput.value) || 1500;
-            // Flash the table row corresponding to the current group
-            const rowIndex = selectionOrder.indexOf(group) + 1;
-            const row = table.rows[rowIndex];
-            row.style.transition = 'background-color 0.5s';
-            row.style.backgroundColor = '#ffff99';
-            closeFlashBtn.style.display = 'inline-block';
-            closeFlashBtn.onclick = () => {
-              clearTimeout(flashTimeout);
-              row.style.backgroundColor = '';
-              closeFlashBtn.style.display = 'none';
-              proceedToNextGroup();
-            };
-            flashTimeout = setTimeout(() => {
-              row.style.backgroundColor = '';
-              closeFlashBtn.style.display = 'none';
-              proceedToNextGroup();
-            }, flashDuration);
-          }
-          
-          function proceedToNextGroup() {
-            currentIndex++;
-            if (currentIndex < selectionOrder.length) {
-              const nextGroup = selectionOrder[currentIndex];
-              showPlayersForGroup(nextGroup);
-              updateTable();
-            } else {
-              // Complete team formed; add team to DataModel teams
-              const teamMembers = selectionOrder.map(group => currentTeam[group]);
-              const team = {
-                id: GolfApp.DataModel.getTeams().length + 1,
-                members: teamMembers
-              };
-              team.totalHandicap = GolfApp.DataModel.calculateTeamHandicap(team);
-              GolfApp.DataModel.getTeams().push(team);
-              GolfApp.UIController.displayTeams();
-              // Remove overlay to finish the selection process
-              document.body.removeChild(overlay);
-            }
-          }
-          
-          // Begin with the first group selection
-          showPlayersForGroup(selectionOrder[currentIndex]);
-          updateTable();
-        }
-        
-        // (Existing functions such as displayPlayers, displayGroups, displayTeams, etc. remain unchanged)
-        function displayPlayers() {
-          const players = GolfApp.DataModel.getPlayers();
-          DOMElements.playerList.innerHTML = '';
-          players.forEach((player, index) => {
-            const playerItem = document.createElement('div');
-            playerItem.className = 'player-item';
-            playerItem.innerHTML = `
-              <div>${player.name}</div>
-              <div>
-                <span>${player.displayHandicap}</span>
-                <button class="remove-btn" data-index="${index}" aria-label="Remove ${player.name}">X</button>
-              </div>
-            `;
-            DOMElements.playerList.appendChild(playerItem);
-          });
-          document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const index = parseInt(this.getAttribute('data-index'));
-              GolfApp.DataModel.removePlayer(index);
-              displayPlayers();
-              if (UIState.isGrouped) { resetGroups(); }
-            });
-          });
-          updatePlayerCount();
-        }
-        
-        function displayGroups() {
-          const groups = GolfApp.DataModel.getGroups();
-          DOMElements.groupA.innerHTML = '';
-          DOMElements.groupB.innerHTML = '';
-          DOMElements.groupC.innerHTML = '';
-          DOMElements.groupD.innerHTML = '';
-          groups.A.forEach(player => {
-            const playerItem = document.createElement('div');
-            playerItem.className = 'player-item';
-            playerItem.innerHTML = `<div>${player.name}</div><div>${player.displayHandicap}</div>`;
-            DOMElements.groupA.appendChild(playerItem);
-          });
-          groups.B.forEach(player => {
-            const playerItem = document.createElement('div');
-            playerItem.className = 'player-item';
-            playerItem.innerHTML = `<div>${player.name}</div><div>${player.displayHandicap}</div>`;
-            DOMElements.groupB.appendChild(playerItem);
-          });
-          groups.C.forEach(player => {
-            const playerItem = document.createElement('div');
-            playerItem.className = 'player-item';
-            playerItem.innerHTML = `<div>${player.name}</div><div>${player.displayHandicap}</div>`;
-            DOMElements.groupC.appendChild(playerItem);
-          });
-          groups.D.forEach(player => {
-            const playerItem = document.createElement('div');
-            playerItem.className = 'player-item';
-            playerItem.innerHTML = `<div>${player.name}</div><div>${player.displayHandicap}</div>`;
-            DOMElements.groupD.appendChild(playerItem);
-          });
-        }
-        
-        function displayTeams() {
-          const teams = GolfApp.DataModel.getTeams();
-          DOMElements.teamsContainer.innerHTML = '';
-          teams.forEach(team => {
-            const teamCard = document.createElement('div');
-            teamCard.className = 'team-card';
-            const teamHandicap = GolfApp.DataModel.calculateTeamHandicap(team);
-            const displayHandicap = teamHandicap.toFixed(1);
-            const displaySign = teamHandicap < 0 ? '+' : '';
-            teamCard.innerHTML = `
-              <h3>Team ${team.id}</h3>
-              <div class="team-member"><strong>A:</strong> ${team.members[0].name} (${team.members[0].displayHandicap})</div>
-              <div class="team-member"><strong>B:</strong> ${team.members[1].name} (${team.members[1].displayHandicap})</div>
-              <div class="team-member"><strong>C:</strong> ${team.members[2].name} (${team.members[2].displayHandicap})</div>
-              <div class="team-member"><strong>D:</strong> ${team.members[3].name} (${team.members[3].displayHandicap})</div>
-              <div class="team-stats"><strong>Team Handicap:</strong> ${displaySign}${Math.abs(displayHandicap)}</div>
-            `;
-            if (team.id === teams.length) { teamCard.classList.add('highlight'); }
-            DOMElements.teamsContainer.appendChild(teamCard);
-          });
-          DOMElements.teamsContainer.scrollTop = DOMElements.teamsContainer.scrollHeight;
-          DOMElements.showBracketBtn.disabled = teams.length < 2;
-          updateTeamCount();
-        }
-        
-        function updatePlayerCount() {
-          const players = GolfApp.DataModel.getPlayers();
-          DOMElements.playerCountElement.textContent = `Total players: ${players.length}`;
-        }
-        
-        function updateTeamCount() {
-          const teams = GolfApp.DataModel.getTeams();
-          DOMElements.teamCountElement.textContent = `Teams created: ${teams.length}`;
-        }
-        
-        function showError(message) {
-          DOMElements.errorMessages.textContent = message;
-          setTimeout(() => { DOMElements.errorMessages.textContent = ''; }, 5000);
-        }
-        
-        function clearError() { DOMElements.errorMessages.textContent = ''; }
-        
-        function resetGroups() {
-          UIState.isGrouped = false;
-          DOMElements.selectTeamBtn.disabled = true;
-          DOMElements.selectAllBtn.disabled = true;
-          DOMElements.sequentialSelectTeamBtn.disabled = true;
-          DOMElements.showBracketBtn.disabled = true;
-          GolfApp.DataModel.setGroups({ A: [], B: [], C: [], D: [] });
-          DOMElements.groupA.innerHTML = '';
-          DOMElements.groupB.innerHTML = '';
-          DOMElements.groupC.innerHTML = '';
-          DOMElements.groupD.innerHTML = '';
-          GolfApp.DataModel.setTeams([]);
-          DOMElements.teamsContainer.innerHTML = '';
-          updateTeamCount();
-          GolfApp.DataModel.setHoleAssignments({});
-          DOMElements.teeAssignmentTabButton.disabled = true;
-        }
-        
-        // Tutorial functions (omitted for brevity)
-        
-        return {
-          init: function() { /* initialization code */ },
-          displayPlayers: displayPlayers,
-          displayGroups: displayGroups,
-          displayTeams: displayTeams,
-          updateHoleDisplays: function() { /* existing function */ },
-          displayUnassignedTeams: function() { /* existing function */ },
-          updateTeeSheet: function() { /* existing function */ },
-          showError: showError,
-          clearError: clearError,
-          resetGroups: resetGroups,
-          enhancedTeamSelection: function() { /* existing function */ },
-          sequentialTeamAssignment: sequentialTeamAssignment,
-          initTeeAssignment: function() { /* existing function */ },
-          getDOMElements: () => DOMElements,
-          getUIState: () => UIState
-        };
-      })();
+      const header = document.createElement('h2');
+      header.textContent = 'Random Team Selection';
+      overlay.appendChild(header);
       
-      /**
-       * App Controller Module
-       * Coordinates between the data model and UI
-       */
-      GolfApp.AppController = (function() {
-        function addPlayer() {
-          GolfApp.UIController.clearError();
-          const DOMElements = GolfApp.UIController.getDOMElements();
-          const nameInput = DOMElements.playerNameInput.value.trim();
-          const handicapInput = DOMElements.playerHandicapInput.value.trim();
-          const result = GolfApp.DataModel.addPlayer(nameInput, handicapInput);
-          if (!result.valid) {
-            if (result.errors.name) {
-              DOMElements.nameValidation.textContent = result.errors.name;
-              DOMElements.playerNameInput.classList.add('input-invalid');
-            }
-            if (result.errors.handicap) {
-              DOMElements.handicapValidation.textContent = result.errors.handicap;
-              DOMElements.playerHandicapInput.classList.add('input-invalid');
-            }
-            return;
-          }
-          GolfApp.UIController.displayPlayers();
-          DOMElements.playerNameInput.value = '';
-          DOMElements.playerHandicapInput.value = '';
-          DOMElements.playerNameInput.focus();
-          if (GolfApp.UIController.getUIState().isGrouped) {
-            GolfApp.UIController.resetGroups();
-          }
-        }
-        
-        function groupPlayers() {
-          GolfApp.UIController.clearError();
-          const result = GolfApp.DataModel.groupPlayers();
-          if (!result.success) {
-            GolfApp.UIController.showError(result.message);
-            return;
-          }
-          GolfApp.UIController.displayGroups();
-          GolfApp.UIController.getUIState().isGrouped = true;
-          const DOMElements = GolfApp.UIController.getDOMElements();
-          DOMElements.selectTeamBtn.disabled = false;
-          DOMElements.selectAllBtn.disabled = false;
-          DOMElements.sequentialSelectTeamBtn.disabled = false;
-        }
-        
-        async function selectTeam() {
-          const UIState = GolfApp.UIController.getUIState();
-          const DOMElements = GolfApp.UIController.getDOMElements();
-          if (!UIState.isGrouped) {
-            GolfApp.UIController.showError("Please group players first.");
-            return;
-          }
-          if (!GolfApp.DataModel.canFormTeam()) {
-            GolfApp.UIController.showError("Not enough players left to form a full team.");
-            DOMElements.selectTeamBtn.disabled = true;
-            DOMElements.selectAllBtn.disabled = true;
-            return;
-          }
-          DOMElements.selectTeamBtn.disabled = true;
-          DOMElements.selectAllBtn.disabled = true;
-          const result = await GolfApp.UIController.enhancedTeamSelection();
-          if (!result.success) {
-            GolfApp.UIController.showError(result.message);
-            return;
-          }
-          if (GolfApp.DataModel.canFormTeam()) {
-            DOMElements.selectTeamBtn.disabled = false;
-            DOMElements.selectAllBtn.disabled = false;
-          }
-          if (GolfApp.DataModel.getTeams().length > 0) {
-            DOMElements.teeAssignmentTabButton.disabled = false;
-          }
-        }
-        
-        async function selectAllTeams() {
-          while (GolfApp.DataModel.canFormTeam()) {
-            await selectTeam();
-            await new Promise(resolve => setTimeout(resolve, 500));
-          }
-        }
-        
-        function handleFileUpload(event) {
-          const file = event.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const contents = e.target.result;
-            processCSV(contents);
-          };
-          reader.readAsText(file);
-        }
-        
-        function processCSV(csv) {
-          GolfApp.UIController.clearError();
-          const result = GolfApp.DataModel.processCSV(csv);
-          if (result.errors.length > 0) {
-            GolfApp.UIController.showError(`CSV Import Error: ${result.errors[0]}`);
-            return;
-          }
-          const players = GolfApp.DataModel.getPlayers().concat(result.players);
-          GolfApp.DataModel.setPlayers(players);
-          GolfApp.UIController.displayPlayers();
-          if (GolfApp.UIController.getUIState().isGrouped) {
-            GolfApp.UIController.resetGroups();
-          }
-          GolfApp.UIController.getDOMElements().fileInput.value = '';
-        }
-        
-        function resetAll() {
-          GolfApp.DataModel.resetAll();
-          GolfApp.UIController.resetGroups();
-          GolfApp.UIController.displayPlayers();
-        }
-        
-        function initTeeAssignment() {
-          GolfApp.UIController.initTeeAssignment();
-        }
-        
-        function autoAssignTeams() {
-          const result = GolfApp.DataModel.autoAssignTeams();
-          if (result.success) {
-            GolfApp.UIController.updateHoleDisplays();
-            GolfApp.UIController.displayUnassignedTeams();
-            GolfApp.UIController.updateTeeSheet();
-          } else { GolfApp.UIController.showError(result.message); }
-        }
-        
-        function randomizeTeamAssignments() {
-          const result = GolfApp.DataModel.randomizeTeamAssignments();
-          if (result.success) {
-            GolfApp.UIController.updateHoleDisplays();
-            GolfApp.UIController.displayUnassignedTeams();
-            GolfApp.UIController.updateTeeSheet();
-          } else { GolfApp.UIController.showError(result.message); }
-        }
-        
-        function resetAssignments() {
-          GolfApp.DataModel.setHoleAssignments({});
-          GolfApp.UIController.getUIState().selectedTeamId = null;
-          GolfApp.UIController.updateHoleDisplays();
-          GolfApp.UIController.displayUnassignedTeams();
-          GolfApp.UIController.updateTeeSheet();
-        }
-        
-        function printTeeSheet() { window.print(); }
-        
-        function setupEventListeners() {
-          const DOMElements = GolfApp.UIController.getDOMElements();
-          DOMElements.tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
-              const tabId = this.getAttribute('data-tab');
-              if (tabId === 'teeAssignmentTab' && GolfApp.DataModel.getTeams().length === 0) {
-                GolfApp.UIController.showError("Please create teams first before assigning tee times.");
-                return;
-              }
-              DOMElements.tabButtons.forEach(btn => btn.classList.remove('active'));
-              DOMElements.tabContents.forEach(content => content.classList.remove('active'));
-              this.classList.add('active');
-              document.getElementById(tabId).classList.add('active');
-              if (tabId === 'teeAssignmentTab') { initTeeAssignment(); }
-            });
-          });
-          
-          DOMElements.addPlayerBtn.addEventListener('click', addPlayer);
-          DOMElements.resetBtn.addEventListener('click', resetAll);
-          DOMElements.fileInput.addEventListener('change', handleFileUpload);
-          DOMElements.playerHandicapInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') { addPlayer(); }
-          });
-          DOMElements.groupPlayersBtn.addEventListener('click', groupPlayers);
-          DOMElements.selectTeamBtn.addEventListener('click', selectTeam);
-          DOMElements.selectAllBtn.addEventListener('click', selectAllTeams);
-          // New event listener for sequential team assignment button
-          DOMElements.sequentialSelectTeamBtn.addEventListener('click', GolfApp.UIController.sequentialTeamAssignment);
-          DOMElements.autoAssignBtn.addEventListener('click', autoAssignTeams);
-          DOMElements.randomAssignBtn.addEventListener('click', randomizeTeamAssignments);
-          DOMElements.resetAssignmentBtn.addEventListener('click', resetAssignments);
-          DOMElements.printTeeSheetBtn.addEventListener('click', printTeeSheet);
-          DOMElements.helpButton.addEventListener('click', function() { /* show tutorial */ });
-          DOMElements.saveButton.addEventListener('click', function() {
-            const result = GolfApp.DataModel.saveToLocalStorage();
-            if (result.success) { showError("Data saved successfully!"); }
-            else { showError(result.message); }
-          });
-          DOMElements.loadButton.addEventListener('click', function() {
-            const result = GolfApp.DataModel.loadFromLocalStorage();
-            if (result.success) {
-              displayPlayers();
-              displayGroups();
-              displayTeams();
-              GolfApp.UIController.getUIState().isGrouped = GolfApp.DataModel.getTeams().length > 0;
-              DOMElements.selectTeamBtn.disabled = !GolfApp.DataModel.canFormTeam();
-              DOMElements.selectAllBtn.disabled = !GolfApp.DataModel.canFormTeam();
-              DOMElements.sequentialSelectTeamBtn.disabled = !GolfApp.DataModel.canFormTeam();
-              DOMElements.showBracketBtn.disabled = GolfApp.DataModel.getTeams().length < 2;
-              DOMElements.teeAssignmentTabButton.disabled = GolfApp.DataModel.getTeams().length === 0;
-              GolfApp.UIController.updateHoleDisplays();
-              GolfApp.UIController.displayUnassignedTeams();
-              GolfApp.UIController.updateTeeSheet();
-              showError("Data loaded successfully!");
-            } else { showError(result.message); }
-          });
-        }
-        
-        return {
-          init: function() {
-            GolfApp.UIController.init();
-            setupEventListeners();
-            const loadResult = GolfApp.DataModel.loadFromLocalStorage();
-            if (loadResult.success) {
-              displayPlayers();
-              displayGroups();
-              displayTeams();
-              GolfApp.UIController.getUIState().isGrouped = GolfApp.DataModel.getTeams().length > 0;
-              const DOMElements = GolfApp.UIController.getDOMElements();
-              DOMElements.selectTeamBtn.disabled = !GolfApp.DataModel.canFormTeam();
-              DOMElements.selectAllBtn.disabled = !GolfApp.DataModel.canFormTeam();
-              DOMElements.sequentialSelectTeamBtn.disabled = !GolfApp.DataModel.canFormTeam();
-              DOMElements.showBracketBtn.disabled = GolfApp.DataModel.getTeams().length < 2;
-              DOMElements.teeAssignmentTabButton.disabled = GolfApp.DataModel.getTeams().length === 0;
-            }
-          }
-        };
-      })();
+      // Create a container for the selected players
+      const teamContainer = document.createElement('div');
+      teamContainer.style.width = '80%';
+      teamContainer.style.margin = '20px auto';
+      teamContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+      teamContainer.style.padding = '20px';
+      teamContainer.style.borderRadius = '8px';
+      teamContainer.style.color = '#333';
+      overlay.appendChild(teamContainer);
       
-      document.addEventListener('DOMContentLoaded', GolfApp.AppController.init);
-    })();
+      // Add buttons
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.style.marginTop = '30px';
+      
+      const acceptButton = document.createElement('button');
+      acceptButton.textContent = 'Accept Team';
+      acceptButton.style.marginRight = '20px';
+      
+      const rerollButton = document.createElement('button');
+      rerollButton.textContent = 'Reroll Team';
+      
+      buttonsContainer.appendChild(acceptButton);
+      buttonsContainer.appendChild(rerollButton);
+      overlay.appendChild(buttonsContainer);
+      
+      document.body.appendChild(overlay);
+      
+      // Function to randomly select players and display them
+      function selectRandomPlayers() {
+        // Select one random player from each group
+        const playerA = groups.A[Math.floor(Math.random() * groups.A.length)];
+        const playerB = groups.B[Math.floor(Math.random() * groups.B.length)];
+        const playerC = groups.C[Math.floor(Math.random() * groups.C.length)];
+        const playerD = groups.D[Math.floor(Math.random() * groups.D.length)];
+        
+        // Display the selected players
+        teamContainer.innerHTML = `
+          <h3>Randomly Selected Team</h3>
+          <div class="team-member" style="padding: 10px; margin: 5px 0; background-color: #f0f0f0; border-radius: 5px;">
+            <strong>Group A:</strong> ${playerA.name} (${playerA.displayHandicap})
+          </div>
+          <div class="team-member" style="padding: 10px; margin: 5px 0; background-color: #f0f0f0; border-radius: 5px;">
+            <strong>Group B:</strong> ${playerB.name} (${playerB.displayHandicap})
+          </div>
+          <div class="team-member" style="padding: 10px; margin: 5px 0; background-color: #f0f0f0; border-radius: 5px;">
+            <strong>Group C:</strong> ${playerC.name} (${playerC.displayHandicap})
+          </div>
+          <div class="team-member" style="padding: 10px; margin: 5px 0; background-color: #f0f0f0; border-radius: 5px;">
+            <strong>Group D:</strong> ${playerD.name} (${playerD.displayHandicap})
+          </div>
+        `;
+        
+        // Calculate and display team handicap
+        const teamHandicap = calculateTeamHandicap([playerA, playerB, playerC, playerD]);
+        const displayHandicap = teamHandicap.toFixed(1);
+        const displaySign = teamHandicap < 0 ? '+' : '';
+        
+        const handicapDiv = document.createElement('div');
+        handicapDiv.style.marginTop = '15px';
+        handicapDiv.style.fontWeight = 'bold';
+        handicapDiv.innerHTML = `Team Handicap: ${displaySign}${Math.abs(displayHandicap)}`;
+        teamContainer.appendChild(handicapDiv);
+        
+        return { playerA, playerB, playerC, playerD };
+      }
+      
+      // Helper function to calculate team handicap
+      function calculateTeamHandicap(members) {
+        let total = 0;
+        members.forEach(player => {
+          const value = player.isPlus ? -player.handicap : player.handicap;
+          total += value;
+        });
+        return total;
+      }
+      
+      // Initial selection
+      let selectedPlayers = selectRandomPlayers();
+      
+      // Set up button events
+      rerollButton.addEventListener('click', () => {
+        // Reselect random players
+        selectedPlayers = selectRandomPlayers();
+      });
+      
+      acceptButton.addEventListener('click', () => {
+        // Remove selected players from their groups
+        groups.A.splice(groups.A.indexOf(selectedPlayers.playerA), 1);
+        groups.B.splice(groups.B.indexOf(selectedPlayers.playerB), 1);
+        groups.C.splice(groups.C.indexOf(selectedPlayers.playerC), 1);
+        groups.D.splice(groups.D.indexOf(selectedPlayers.playerD), 1);
+        
+        // Create and add the team
+        const team = {
+          id: teams.length + 1,
+          members: [selectedPlayers.playerA, selectedPlayers.playerB, selectedPlayers.playerC, selectedPlayers.playerD],
+          totalHandicap: calculateTeamHandicap([selectedPlayers.playerA, selectedPlayers.playerB, selectedPlayers.playerC, selectedPlayers.playerD])
+        };
+        teams.push(team);
+        
+        // Update the UI
+        displayTeams();
+        
+        // Remove the overlay
+        document.body.removeChild(overlay);
+      });
+    }
+    
+    // Function to display teams
+    function displayTeams() {
+      const teamsContainer = document.getElementById('teamsContainer');
+      teamsContainer.innerHTML = '';
+      
+      teams.forEach(team => {
+        const teamCard = document.createElement('div');
+        teamCard.className = 'team-card';
+        teamCard.style.margin = '10px 0';
+        teamCard.style.padding = '15px';
+        teamCard.style.border = '1px solid #ddd';
+        teamCard.style.borderRadius = '4px';
+        teamCard.style.backgroundColor = '#f9f9f9';
+        
+        let teamHtml = `<h3>Team ${team.id}</h3>`;
+        
+        team.members.forEach(player => {
+          teamHtml += `
+            <div class="team-member">
+              ${player.name} (${player.displayHandicap})
+            </div>
+          `;
+        });
+        
+        const displayHandicap = team.totalHandicap.toFixed(1);
+        const displaySign = team.totalHandicap < 0 ? '+' : '';
+        
+        teamHtml += `
+          <div style="margin-top: 10px; font-weight: bold;">
+            Team Handicap: ${displaySign}${Math.abs(displayHandicap)}
+          </div>
+        `;
+        
+        teamCard.innerHTML = teamHtml;
+        teamsContainer.appendChild(teamCard);
+      });
+    }
+    
+    // Set up event listener for the Random Team Selection button
+    document.getElementById('randomTeamSelectBtn').addEventListener('click', randomTeamSelection);
   </script>
 </body>
 </html>
