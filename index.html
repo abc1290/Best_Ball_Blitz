@@ -2297,17 +2297,17 @@
                     const team = result.team;
                     
                     // Animate each group selection in D -> C -> B -> A order
-                    const revealOrder = ['D', 'C', 'B', 'A']; 
+                    const revealOrder = ['D', 'C', 'B', 'A'];
+                    // Map reveal order to team.members index (A=0, B=1, C=2, D=3)
+                    const groupToIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 }; 
+
                     for (let i = 0; i < revealOrder.length; i++) {
-                        const group = revealOrder[i];
+                        const group = revealOrder[i]; // e.g., 'D' on first iteration
                         const slot = slots[group];
                         const playerDiv = document.getElementById(`selected-player-${group}`);
-                        // Find the correct player from the team object based on the group letter
-                        // Need to check original _data.groups as well because selectTeam removes the player
-                        const player = team.members.find(p => 
-                            (GolfApp.DataModel.getGroups()[group] && GolfApp.DataModel.getGroups()[group].includes(p)) || 
-                            (_data.groups[group] && _data.groups[group].includes(p)) // Check original _data if needed
-                        ); 
+                        // Get the correct player directly from the team object using the index
+                        const playerIndex = groupToIndex[group];
+                        const player = team.members[playerIndex];
                         
                         // "Spin" animation
                         slot.textContent = '...';
